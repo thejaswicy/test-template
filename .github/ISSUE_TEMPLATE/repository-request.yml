@@ -1,0 +1,30 @@
+---
+name: Repository request form
+description: Submit a request to create a New Repository.
+title: 'chore: add repository {Repository-name}, using {Template-repo}'
+labels: ['add repository']
+assignees:
+  - thejaswitricon
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please update the _title_ above, with the `{Repository-name}`, `{Template-repo}` supplied below.
+  - type: input
+    id: name
+    attributes:
+      label: Repository-name
+      description: Name of new repository.
+      placeholder: ABC
+    validations:
+      required: true
+  - type: dropdown
+    id: Template-repository
+    attributes:
+      label: Template-repository
+      description: Template reposiotry to be used to create new repository.
+      options:
+        - template-repository
+        - aws-terraform-template
+    validations:
+      required: true
