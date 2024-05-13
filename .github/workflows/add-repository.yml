@@ -12,10 +12,8 @@
   permissions:
     contents: write
     issues: write
-    packages: read
     pull-requests: write
     repository-projects: read
-    statuses: write
 
   jobs:
     setup:
@@ -32,7 +30,8 @@
           with:
             fetch-depth: 0
 
-        - uses: stefanbuck/github-issue-parser@v3
+        - name: Parse issue
+          uses: stefanbuck/github-issue-parser@v3
           id: issue-parser
           with:
             template-path: .github/ISSUE_TEMPLATE/repository-request.yml
