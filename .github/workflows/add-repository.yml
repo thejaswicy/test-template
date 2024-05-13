@@ -37,10 +37,11 @@
           with:
             template-path: .github/ISSUE_TEMPLATE/repository-request.yml
 
-        - name: Get Repository and Template Repository names
+        - name: Create new repository
           run: |
             echo '${{ steps.issue-parser.outputs.jsonString }}' > issue.json
             ISSUE_CONTENT=$(cat issue.json)
+            echo "$ISSUE_CONTENT"
             REPOSITORY_NAME=$(echo $ISSUE_CONTENT | jq -r '.name')
             TEMPLATE_REPO_NAME=$(echo $ISSUE_CONTENT | jq -r '."Template-repository"')
             CREATE_REPO=$(curl -L \
