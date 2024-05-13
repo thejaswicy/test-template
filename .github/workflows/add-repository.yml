@@ -50,5 +50,5 @@
               -H "Accept: application/vnd.github+json" \
               -H "Authorization: Bearer TOKEN" \
               -H "X-GitHub-Api-Version: 2022-11-28" \
-              https://api.github.com/repos/${{ env.REPO_OWNER }}/$TEMPLATE_REPO_NAME/generate \
-              -d "{\"owner\":\"${{ env.REPO_OWNER }}\",\"name\":\"$REPOSITORY_NAME\",\"include_all_branches\":false,\"private\":false}")
+              https://api.github.com/repos/thejaswicy/$TEMPLATE_REPO_NAME/generate \
+              -d "{\"owner\":\"thejaswicy\",\"name\":\"$REPOSITORY_NAME\",\"include_all_branches\":false,\"private\":false}")
