@@ -41,9 +41,10 @@
           run: |
             echo '${{ steps.issue-parser.outputs.jsonString }}' > issue.json
             ISSUE_CONTENT=$(cat issue.json)
-            echo "$ISSUE_CONTENT"
             REPOSITORY_NAME=$(echo $ISSUE_CONTENT | jq -r '.name')
+            echo "$REPOSITORY_NAME"
             TEMPLATE_REPO_NAME=$(echo $ISSUE_CONTENT | jq -r '."Template-repository"')
+            echo "$TEMPLATE_REPO_NAME"
             CREATE_REPO=$(curl -L \
               -X POST \
               -H "Accept: application/vnd.github+json" \
