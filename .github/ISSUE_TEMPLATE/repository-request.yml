@@ -1,7 +1,7 @@
 ---
 name: Repository request form
 description: Submit a request to create a New Repository.
-title: 'add {repository} repo, using template'
+title: 'create {repository} repo, using template'
 assignees:
   - thejaswitricon
 body:
