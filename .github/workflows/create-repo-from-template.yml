@@ -57,7 +57,7 @@
             token: ${{ env.GH_TOKEN }}
             issue-number: ${{ github.event.issue.number }}
             state: 'open'
-            title: 'chore: add  ${{ steps.repo-names.outputs.REPOSITORY_NAME }} repo, using ${{ steps.repo-names.outputs.TEMPLATE_REPO_NAME }} repo'
+            title: 'chore: add  ${{ env.REPOSITORY_NAME }} repo, using ${{ env.TEMPLATE_REPO_NAME }} repo'
             update-mode: 'replace'
 
         #     CREATE_REPO=$(curl -L \
