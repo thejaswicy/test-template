@@ -22,7 +22,7 @@
       env:
         TOKEN: ${{ secrets.PAT_GITHUB }}
         REPO_OWNER: ${{ github.event.repository.owner.login }}
-      if: ${{ github.event.issue.title == 'chore: add {repository} repo, using template' }}
+      if: ${{ github.event.issue.title == 'chore == add {repository} repo, using template' }}
       steps:
         - name: Checkout
           uses: actions/checkout@v4
