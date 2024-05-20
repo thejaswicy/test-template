@@ -22,6 +22,8 @@
       env:
         GH_TOKEN: ${{ secrets.PAT_GITHUB }}
         REPO_OWNER: ${{ github.event.repository.owner.login }}
+        ISSUE_NUMBER: ${{ github.event.issue.number }}
+
       if: ${{ github.event.issue.title == 'add {repository} repo, using template' }}
       steps:
         - run: echo "The Title of your PR is ${{ github.event.issue.title }}"
@@ -37,39 +39,25 @@
           with:
             template-path: .github/ISSUE_TEMPLATE/repository-request.yml
 
-        - name: Create new repository
+        - name: Get repo details
           id: repo-names
           run: |
             echo '${{ steps.issue-parser.outputs.jsonString }}' > issue.json
-            ISSUE_CONTENT=$(cat issue.json)
-            REPOSITORY_NAME=$(echo $ISSUE_CONTENT | jq -r '.name')
-            TEMPLATE_REPO_NAME=$(echo $ISSUE_CONTENT | jq -r '."Template-repository"')
-            echo "REPOSITORY_NAME=${REPOSITORY_NAME}" >> $GITHUB_ENV
-            echo "TEMPLATE_REPO_NAME=${TEMPLATE_REPO_NAME}" >> $GITHUB_ENV
-          env:
-            REPOSITORY_NAME: ${{ steps.repo-names.outputs.REPOSITORY_NAME }}
-            TEMPLATE_REPO_NAME: ${{ steps.repo-names.outputs.TEMPLATE_REPO_NAME }}
+            echo "REPOSITORY_NAME=$(jq -r '.name' issue.json)" >> $GITHUB_ENV
+            echo "TEMPLATE_REPO_NAME=$(jq -r '."Template-repository"' issue.json)" >> $GITHUB_ENV
 
         - name: Update Issue Title
           run: |
-            gh issue edit ${{ github.event.issue.number }} --title "chore: add  ${REPOSITORY_NAME} repo, using ${TEMPLATE_REPO_NAME} repo"
+            gh issue edit ${{ env.ISSUE_NUMBER }} --title "chore: add  ${REPOSITORY_NAME} repo, using ${TEMPLATE_REPO_NAME} repo"
           env:
-            GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+            GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
-        # - name: Update issue
-        #   uses: actions-cool/issues-helper@v3
-        #   with:
-        #     actions: 'update-issue'
-        #     token: ${{ env.GH_TOKEN }}
-        #     issue-number: ${{ github.event.issue.number }}
-        #     state: 'open'
-        #     title: 'chore: add  ${{ steps.repo-names.outputs.REPOSITORY_NAME }} repo, using ${{ steps.repo-names.outputs.TEMPLATE_REPO_NAME }} repo'
-        #     update-mode: 'replace'
-
-        #     CREATE_REPO=$(curl -L \
-        #       -X POST \
-        #       -H "Accept: application/vnd.github+json" \
-        #       -H "Authorization: Bearer $TOKEN" \
-        #       -H "X-GitHub-Api-Version: 2022-11-28" \
-        #       "https://api.github.com/repos/${{ env.REPO_OWNER }}/${{ env.TEMPLATE_REPO_NAME }}/generate" \
-        #       -d "{\"owner\":\"${{ env.REPO_OWNER }}\",\"name\":\"${{ env.REPOSITORY_NAME }}\",\"include_all_branches\":false,\"private\":false}")
+        - name: Create new repository
+          run: |
+            CREATE_REPO=$(curl -L \
+              -X POST \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              "https://api.github.com/repos/${{ env.REPO_OWNER }}/${TEMPLATE_REPO_NAME}/generate" \
+              -d "{\"owner\":\"${{ env.REPO_OWNER }}\",\"name\":\"${REPOSITORY_NAME}\",\"include_all_branches\":false,\"private\":false}")
