@@ -22,6 +22,7 @@ body:
     attributes:
       label: Template-repository
       description: Template reposiotry to be used to create new repository.
+      placeholder: template-repository
       options:
         - template-repository
         - terraform-aws-template
