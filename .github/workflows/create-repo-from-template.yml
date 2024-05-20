@@ -52,7 +52,7 @@
 
         - name: Update Issue Title
           run: |
-            gh issue edit ${{ github.event.issue.number }} --title "chore: add  ${{REPOSITORY_NAME}} repo, using ${{TEMPLATE_REPO_NAME}} repo"
+            gh issue edit ${{ github.event.issue.number }} --title "chore: add  ${REPOSITORY_NAME} repo, using ${TEMPLATE_REPO_NAME} repo"
           env:
             GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
