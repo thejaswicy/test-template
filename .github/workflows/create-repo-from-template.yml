@@ -1,5 +1,5 @@
 ---
-  name: Add Repository
+  name: Create Repo from Template
 
   on:
     issues:
@@ -22,7 +22,7 @@
       env:
         TOKEN: ${{ secrets.PAT_GITHUB }}
         REPO_OWNER: ${{ github.event.repository.owner.login }}
-      if: contains(github.event.issue.labels.*.name, 'add repository')
+      if: ${{ github.event.issue.title }} == 'chore: add {repository} repo, using template'
       steps:
         - name: Checkout
           uses: actions/checkout@v4
