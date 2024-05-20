@@ -46,8 +46,7 @@
             echo "TEMPLATE_REPO_NAME=$(jq -r '."Template-repository"' issue.json)" >> $GITHUB_ENV
 
         - name: Update Issue Title
-          run: |
-            gh issue edit ${{ env.ISSUE_NUMBER }} --title "chore: add  ${REPOSITORY_NAME} repo, using ${TEMPLATE_REPO_NAME} repo"
+          run: gh issue edit ${{ env.ISSUE_NUMBER }} --title "chore: add  ${REPOSITORY_NAME} repo, using ${TEMPLATE_REPO_NAME} repo"
           env:
             GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
