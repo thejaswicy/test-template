@@ -22,9 +22,9 @@
       env:
         TOKEN: ${{ secrets.PAT_GITHUB }}
         REPO_OWNER: ${{ github.event.repository.owner.login }}
-      # if: ${{ github.event.issue.title == 'chore == add {repository} repo, using template' }}
+      if: ${{ github.event.issue.title == "Add {repository} repo, using template" }}
       steps:
-        - run: echo The Title of your PR is ${{ github.event.issue.title }}
+        - run: echo "The Title of your PR is ${{ github.event.issue.title }}"
         - name: Checkout
           uses: actions/checkout@v4
           id: checkout
