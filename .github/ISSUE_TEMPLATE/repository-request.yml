@@ -2,10 +2,13 @@
 name: Repository request form
 description: Submit a request to create a New Repository.
 title: 'add {repository} repo, using template'
-labels: ['add repository']
 assignees:
   - thejaswitricon
 body:
+  - type: markdown
+    attributes:
+      value: |
+        Please provide the {Repository-name} and select the {Template-repository} name from the dropdown below.
   - type: input
     id: name
     attributes:

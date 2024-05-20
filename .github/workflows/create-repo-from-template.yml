@@ -10,9 +10,9 @@
     cancel-in-progress: true
 
   permissions:
-    contents: write
+    contents: read
     issues: write
-    pull-requests: write
+    pull-requests: read
     repository-projects: read
 
   jobs:
@@ -26,7 +26,6 @@
 
       if: ${{ github.event.issue.title == 'add {repository} repo, using template' }}
       steps:
-        - run: echo "The Title of your PR is ${{ github.event.issue.title }}"
         - name: Checkout
           uses: actions/checkout@v4
           id: checkout
@@ -50,7 +49,7 @@
           run: |
             gh issue edit ${{ env.ISSUE_NUMBER }} --title "chore: add  ${REPOSITORY_NAME} repo, using ${TEMPLATE_REPO_NAME} repo"
           env:
-            GH_TOKEN: ${{ secrets.GH_TOKEN }}
+            GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
         - name: Create new repository
           run: |
