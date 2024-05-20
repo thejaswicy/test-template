@@ -44,15 +44,15 @@
             ISSUE_CONTENT=$(cat issue.json)
             REPOSITORY_NAME=$(echo $ISSUE_CONTENT | jq -r '.name')
             TEMPLATE_REPO_NAME=$(echo $ISSUE_CONTENT | jq -r '."Template-repository"')
-            echo "REPOSITORY_NAME=${REPOSITORY_NAME}" >> $GITHUB_OUTPUT
-            echo "TEMPLATE_REPO_NAME=${TEMPLATE_REPO_NAME}" >> $GITHUB_OUTPUT
+            echo "REPOSITORY_NAME=${REPOSITORY_NAME}" >> $GITHUB_ENV
+            echo "TEMPLATE_REPO_NAME=${TEMPLATE_REPO_NAME}" >> $GITHUB_ENV
           env:
             REPOSITORY_NAME: ${{ steps.repo-names.outputs.REPOSITORY_NAME }}
             TEMPLATE_REPO_NAME: ${{ steps.repo-names.outputs.TEMPLATE_REPO_NAME }}
 
         - name: Update Issue Title
           run: |
-            gh issue edit ${{ github.event.issue.number }} --title "chore: add  ${{ env.REPOSITORY_NAME }} repo, using ${{ env.TEMPLATE_REPO_NAME }} repo"
+            gh issue edit ${{ github.event.issue.number }} --title "chore: add  ${{REPOSITORY_NAME}} repo, using ${{TEMPLATE_REPO_NAME}} repo"
           env:
             GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
