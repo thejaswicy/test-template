@@ -50,7 +50,7 @@
           run: |
             gh issue edit ${{ env.ISSUE_NUMBER }} --title "chore: add  ${REPOSITORY_NAME} repo, using ${TEMPLATE_REPO_NAME} repo"
           env:
-            GH_TOKEN: ${{ secrets.GH_TOKEN }}
+            GH_TOKEN: ${{ env.GH_TOKEN }}
 
         - name: Create new repository
           run: |
