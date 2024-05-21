@@ -59,6 +59,7 @@ jobs:
           if [ "$HTTP_STATUS" == "200" ]; then
             echo "Repository already exists. Please change the name of the "New Repository" in the issue and re-open the issue."
             exit 1
+          fi
 
       - name: Update Issue Title
         run: |
