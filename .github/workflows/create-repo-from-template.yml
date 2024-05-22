@@ -1,79 +1,79 @@
----
-name: Create Repo from Template
+# ---
+# name: Create Repo from Template
 
-on:
-  issues:
-    types: [opened, reopened]
+# on:
+#   issues:
+#     types: [opened, reopened]
 
-concurrency:
-  group: ${{github.ref}}-${{github.workflow}}
-  cancel-in-progress: true
+# concurrency:
+#   group: ${{github.ref}}-${{github.workflow}}
+#   cancel-in-progress: true
 
-permissions:
-  contents: read
-  issues: write
-  pull-requests: read
-  repository-projects: read
+# permissions:
+#   contents: read
+#   issues: write
+#   pull-requests: read
+#   repository-projects: read
 
-jobs:
-  setup:
-    name: Repository Setup
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-    env:
-      GH_TOKEN: ${{ secrets.PAT_GITHUB || secrets.GITHUB_TOKEN }}
-      ISSUE_NUMBER: ${{ github.event.issue.number }}
-      REPO_OWNER: ${{ github.event.repository.owner.login }}
+# jobs:
+#   setup:
+#     name: Repository Setup
+#     runs-on: ubuntu-latest
+#     defaults:
+#       run:
+#         shell: bash
+#     env:
+#       GH_TOKEN: ${{ secrets.PAT_GITHUB || secrets.GITHUB_TOKEN }}
+#       ISSUE_NUMBER: ${{ github.event.issue.number }}
+#       REPO_OWNER: ${{ github.event.repository.owner.login }}
 
-    if: ${{ github.event.issue.title == 'create {repository} repo, using template' }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        id: checkout
-        with:
-          fetch-depth: 0
+#     if: ${{ github.event.issue.title == 'create {repository} repo, using template' }}
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v4
+#         id: checkout
+#         with:
+#           fetch-depth: 0
 
-      - name: Parse issue body
-        uses: stefanbuck/github-issue-parser@v3
-        id: issue-parser
-        with:
-          template-path: .github/ISSUE_TEMPLATE/repository-request.yml
+#       - name: Parse issue body
+#         uses: stefanbuck/github-issue-parser@v3
+#         id: issue-parser
+#         with:
+#           template-path: .github/ISSUE_TEMPLATE/repository-request.yml
 
-      - name: Get repo details
-        id: repo-names
-        run: |
-          echo '${{ steps.issue-parser.outputs.jsonString }}' > issue.json
-          echo "REPOSITORY_NAME=$(jq -r '.name' issue.json)" >> $GITHUB_ENV
-          echo "TEMPLATE_REPO_NAME=$(jq -r '."Template-repository"' issue.json)" >> $GITHUB_ENV
+#       - name: Get repo details
+#         id: repo-names
+#         run: |
+#           echo '${{ steps.issue-parser.outputs.jsonString }}' > issue.json
+#           echo "REPOSITORY_NAME=$(jq -r '.name' issue.json)" >> $GITHUB_ENV
+#           echo "TEMPLATE_REPO_NAME=$(jq -r '."Template-repository"' issue.json)" >> $GITHUB_ENV
 
-      - name: Check if repository exists
-        id: check-repo
-        run: |
-          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer $GH_TOKEN" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            https://api.github.com/repos/${REPO_OWNER}/${REPOSITORY_NAME})
-          if [ "$HTTP_STATUS" == "200" ]; then
-            echo "Repository already exists. Please change the name of the New Repository in the issue and re-open the issue."
-            exit 1
-          fi
+#       - name: Check if repository exists
+#         id: check-repo
+#         run: |
+#           HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+#             -H "Accept: application/vnd.github+json" \
+#             -H "Authorization: Bearer $GH_TOKEN" \
+#             -H "X-GitHub-Api-Version: 2022-11-28" \
+#             https://api.github.com/repos/${REPO_OWNER}/${REPOSITORY_NAME})
+#           if [ "$HTTP_STATUS" == "200" ]; then
+#             echo "Repository already exists. Please change the name of the New Repository in the issue and re-open the issue."
+#             exit 1
+#           fi
 
-      - name: Update Issue Title
-        run: |
-          gh issue edit ${{ env.ISSUE_NUMBER }} --title "chore: create ${REPOSITORY_NAME} repository, using ${TEMPLATE_REPO_NAME} repository"
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT_GITHUB || secrets.GITHUB_TOKEN }}
+#       - name: Update Issue Title
+#         run: |
+#           gh issue edit ${{ env.ISSUE_NUMBER }} --title "chore: create ${REPOSITORY_NAME} repository, using ${TEMPLATE_REPO_NAME} repository"
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB || secrets.GITHUB_TOKEN }}
 
-      - name: Create new repository
-        run: |
-          CREATE_REPO=$(curl -L \
-            -X POST \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer $GH_TOKEN" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            "https://api.github.com/repos/${REPO_OWNER}/${TEMPLATE_REPO_NAME}/generate" \
-            -d "{\"owner\":\"${REPO_OWNER}\",\"name\":\"${REPOSITORY_NAME}\",\"include_all_branches\":false,\"private\":false}")
-          echo "Created repository ${REPOSITORY_NAME} in ${REPO_OWNER}"
+#       - name: Create new repository
+#         run: |
+#           CREATE_REPO=$(curl -L \
+#             -X POST \
+#             -H "Accept: application/vnd.github+json" \
+#             -H "Authorization: Bearer $GH_TOKEN" \
+#             -H "X-GitHub-Api-Version: 2022-11-28" \
+#             "https://api.github.com/repos/${REPO_OWNER}/${TEMPLATE_REPO_NAME}/generate" \
+#             -d "{\"owner\":\"${REPO_OWNER}\",\"name\":\"${REPOSITORY_NAME}\",\"include_all_branches\":false,\"private\":false}")
+#           echo "Created repository ${REPOSITORY_NAME} in ${REPO_OWNER}"
