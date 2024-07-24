@@ -41,8 +41,10 @@ jobs:
       - name: Get repo details
         run: |
           echo '${{ steps.issue-parser.outputs.jsonString }}' > issue.json
-          echo "REPOSITORY_NAME=$(jq -r '.name' issue.json)" >> $GITHUB_ENV
-          echo "TEMPLATE_REPO_NAME=$(jq -r '."Template-repository"' issue.json)" >> $GITHUB_ENV
+          REPOSITORY_NAME=$(jq -r '.name' issue.json)
+          TEMPLATE_REPO_NAME=$(jq -r '."Template-repository"' issue.json)
+          echo "REPOSITORY_NAME=$REPOSITORY_NAME" >> $GITHUB_ENV
+          echo "TEMPLATE_REPO_NAME=$TEMPLATE_REPO_NAME" >> $GITHUB_ENV
 
       - name: Check if repository exists
         run: |
